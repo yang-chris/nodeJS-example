@@ -11,7 +11,39 @@
 <div class="page">
     <% include components/top.inc.ejs %>
     <div class="content-wrap">
-        我是管理banner
+        <div>
+            <form action="?" method="post">
+                标题：<input type="text" name="title"><br/>
+                描述：<textarea name="description"></textarea><br>
+                链接：<input type="text" name="href"><br>
+                <input type="submit" value="提交">
+            </form>
+        </div>
+        <table width="80%" border="1">
+            <thead>
+            <tr>
+                <td width="5%">ID</td>
+                <td width="25%">标题</td>
+                <td width="40%">描述</td>
+                <td width="20%">href</td>
+                <td width="10%">操作</td>
+            </tr>
+            </thead>
+            <% banner %>
+            <tbody>
+            <% for(var i=0; i<banner.length;i++){%>
+            <tr>
+                <td><%=banner[i].ID %></td>
+                <td><%=banner[i].title %></td>
+                <td><%=banner[i].description %></td>
+                <td><%=banner[i].href %></td>
+                <td>
+                    <a href="?act=mod&id=<%=banner[i].ID%>">修改</a>
+                    <a href="?act=del&id=<%=banner[i].ID%>" onclick="return confirm('你真的要删吗?')">删除</a> </td>
+            </tr>
+            <% } %>
+            </tbody>
+        </table>
     </div>
 </div>
 </body>

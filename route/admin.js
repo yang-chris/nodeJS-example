@@ -51,7 +51,7 @@ module.exports=function () {
                     }
                 }
             }
-        })
+        });
 
         console.log(username,password);
     });
@@ -62,7 +62,50 @@ module.exports=function () {
     });
     //请求banner页面
     router.get('/banner',function (req,res) {
-        res.render('admin/banner.ejs',{})
+        switch (req.query.act){
+            case 'mod':
+                break;
+            case "del":
+                db.query(`DELETE FROM banner_table WHERE ID=${req.query.id}`,function (err,data) {
+                    if(err){
+                        console.error(err);
+                        res.status(500).send('database error').end();
+                    }else{
+                        res.redirect('/admin/banner')
+                    }
+                })
+                break;
+            default:
+                db.query(`SELECT * FROM banner_table`,function (err,banner) {
+                    if(err){
+                        console.error(err);
+                        res.status(500).send('database error').end();
+                    }else{
+                        res.render('admin/banner.ejs',{banner})
+                    }
+                });
+                break;
+        }
+
+    });
+    //提交banner数据
+    router.post('/banner',function (req,res) {
+        var title=req.body.title;
+        var description=req.body.description;
+        var href=req.body.href;
+        console.log(title,'+++'+description+'+++'+href);
+        if(!title||!description||!href){
+            res.status(400).send('数据不完整').end();
+        }else{
+            db.query(`INSERT INTO banner_table (title,description,href) VALUE('${title}','${description}','${href}')`,function (err,data) {
+                if(err){
+                    console.error(err);
+                    res.status(500).send('database error').end();
+                }else{
+                    res.redirect('/admin/banner');
+                }
+            })
+        }
     });
     return router;
 };
